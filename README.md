@@ -4,11 +4,6 @@
 # Java-Source-Code-Dependency-Analyzer
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Java Source Code Dependency Analyzer Features</title>
-</head>
 <body>
     <h1>Java Source Code Dependency Analyzer Features</h1>
     <div>
