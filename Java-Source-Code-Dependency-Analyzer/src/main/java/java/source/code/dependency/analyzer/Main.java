@@ -18,15 +18,13 @@ package java.source.code.dependency.analyzer;
  *
  * @author Freya Ebba Christ 
  */
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class Main {
     public static void main(String[] args) {
-        // Replace "path/to/your/java/source" with the actual directory path
         String rootDirectory = "path/to/your/java/source";
-
         List<String> javaFiles = JavaFileCollector.collectJavaFiles(rootDirectory);
 
         DependencyAnalyzer analyzer = new DependencyAnalyzer();
@@ -34,7 +32,7 @@ public class Main {
             analyzer.analyzeFile(filePath);
         }
 
-        HashMap<String, Set<String>> dependencies = analyzer.getDependencies();
-        YamlExporter.exportToYaml(dependencies, "output/dependencies.yaml");
+        Map<String, Set<String>> methodCallGraph = analyzer.getMethodCallGraph();
+        YamlExporter.exportMethodCallGraphToYaml(methodCallGraph, "output/method_call_graph.yaml");
     }
 }

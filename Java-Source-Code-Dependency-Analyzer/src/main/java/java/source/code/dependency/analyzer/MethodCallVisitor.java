@@ -18,20 +18,28 @@ package java.source.code.dependency.analyzer;
  *
  * @author Freya Ebba Christ 
  */
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import java.io.File;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
+import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
 import java.util.Map;
 import java.util.Set;
 
-public class YamlExporter {
-    public static void exportMethodCallGraphToYaml(Map<String, Set<String>> data, String outputPath) {
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+public class MethodCallVisitor extends VoidVisitorAdapter<String> {
+    private final Map<String, Set<String>> methodCallGraph;
+
+    public MethodCallVisitor(Map<String, Set<String>> methodCallGraph) {
+        this.methodCallGraph = methodCallGraph;
+    }
+
+    @Override
+    public void visit(MethodCallExpr m, String currentMethodSignature) {
+        super.visit(m, currentMethodSignature);
         try {
-            mapper.writeValue(new File(outputPath), data);
+            ResolvedMethodDeclaration resolved = m.resolve();
+            String calleeSignature = resolved.getQualifiedSignature();
+            methodCallGraph.get(currentMethodSignature).add(calleeSignature);
         } catch (Exception e) {
-            e.printStackTrace();
+            // Resolution error
         }
     }
 }

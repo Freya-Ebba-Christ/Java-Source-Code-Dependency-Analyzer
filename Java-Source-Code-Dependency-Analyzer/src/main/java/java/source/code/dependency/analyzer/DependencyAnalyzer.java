@@ -19,43 +19,46 @@ package java.source.code.dependency.analyzer;
  */
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
+import com.github.javaparser.symbolsolver.JavaSymbolSolver;
+import com.github.javaparser.symbolsolver.resolution.typesolvers.CombinedTypeSolver;
+import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeSolver;
 import java.io.FileInputStream;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class DependencyAnalyzer {
-    private final HashMap<String, Set<String>> dependencies = new HashMap<>();
+    private final Map<String, Set<String>> methodCallGraph = new HashMap<>();
+    private final JavaParser javaParser;
+
+    public DependencyAnalyzer() {
+        CombinedTypeSolver combinedTypeSolver = new CombinedTypeSolver(new ReflectionTypeSolver());
+        JavaSymbolSolver symbolSolver = new JavaSymbolSolver(combinedTypeSolver);
+
+        ParserConfiguration configuration = new ParserConfiguration();
+        configuration.setSymbolResolver(symbolSolver);
+        
+        this.javaParser = new JavaParser(configuration);
+    }
 
     public void analyzeFile(String filePath) {
         try (FileInputStream fis = new FileInputStream(filePath)) {
-            JavaParser javaParser = new JavaParser();
             ParseResult<CompilationUnit> parseResult = javaParser.parse(fis);
 
             if (parseResult.isSuccessful() && parseResult.getResult().isPresent()) {
                 CompilationUnit cu = parseResult.getResult().get();
-
-                cu.accept(new VoidVisitorAdapter<Void>() {
-                    @Override
-                    public void visit(ClassOrInterfaceDeclaration n, Void arg) {
-                        super.visit(n, arg);
-                        String className = n.getNameAsString();
-                        dependencies.putIfAbsent(className, new HashSet<>());
-
-                        n.getExtendedTypes().forEach(t -> dependencies.get(className).add(t.getNameAsString()));
-                        n.getImplementedTypes().forEach(t -> dependencies.get(className).add(t.getNameAsString()));
-                    }
-                }, null);
+                ClassAndMethodVisitor classAndMethodVisitor = new ClassAndMethodVisitor(methodCallGraph);
+                cu.accept(classAndMethodVisitor, null);
             }
         } catch (Exception e) {
         }
     }
 
-    public HashMap<String, Set<String>> getDependencies() {
-        return dependencies;
+    public Map<String, Set<String>> getMethodCallGraph() {
+        return methodCallGraph;
     }
 }
+
 

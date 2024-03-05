@@ -1,6 +1,7 @@
-java/source/code/dependency/analyzer/DependencyAnalyzer$1.class
 java/source/code/dependency/analyzer/JavaSourceCodeDependencyAnalyzer.class
-java/source/code/dependency/analyzer/DependencyAnalyzer.class
 java/source/code/dependency/analyzer/YamlExporter.class
 java/source/code/dependency/analyzer/Main.class
+java/source/code/dependency/analyzer/ClassAndMethodVisitor.class
 java/source/code/dependency/analyzer/JavaFileCollector.class
+java/source/code/dependency/analyzer/DependencyAnalyzer.class
+java/source/code/dependency/analyzer/MethodCallVisitor.class
