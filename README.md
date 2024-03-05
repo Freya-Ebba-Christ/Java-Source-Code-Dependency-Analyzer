@@ -2,7 +2,14 @@
 
 
 # Java-Source-Code-Dependency-Analyzer
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Source Code Dependency Analyzer Features</title>
+</head>
+<body>
     <h1>Java Source Code Dependency Analyzer Features</h1>
     <div>
         <h2>Class-Level Dependency Analysis</h2>
@@ -20,3 +27,5 @@
         <h2>Export to YAML</h2>
         <p>Analysis results can be exported to YAML files, offering a human-readable format for class dependencies and method call hierarchies. This feature facilitates documentation, reporting, and sharing of analysis results with team members or integrating into documentation sites.</p>
     </div>
+</body>
+</html>
