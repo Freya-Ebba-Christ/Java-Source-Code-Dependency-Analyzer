@@ -19,27 +19,26 @@ package java.source.code.dependency.analyzer;
  * @author Freya Ebba Christ 
  */
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 public class ClassAndMethodVisitor extends VoidVisitorAdapter<Void> {
-    private final Map<String, Set<String>> methodCallGraph;
+    private Map<String, Set<String>> classDependencies;
+    private Map<String, Set<String>> methodCallGraph;
+    private String targetMethodQualifiedName;
 
-    public ClassAndMethodVisitor(Map<String, Set<String>> methodCallGraph) {
+    public ClassAndMethodVisitor(Map<String, Set<String>> classDependencies, Map<String, Set<String>> methodCallGraph, String targetMethodQualifiedName) {
+        this.classDependencies = classDependencies;
         this.methodCallGraph = methodCallGraph;
+        this.targetMethodQualifiedName = targetMethodQualifiedName;
     }
 
     @Override
     public void visit(ClassOrInterfaceDeclaration n, Void arg) {
         super.visit(n, arg);
-        n.getMethods().forEach(method -> {
-            String className = n.getFullyQualifiedName().orElse("[Anonymous]");
-            String methodSignature = className + "." + method.getSignature().asString();
-            methodCallGraph.putIfAbsent(methodSignature, new HashSet<>());
-            method.accept(new MethodCallVisitor(methodCallGraph), methodSignature);
-        });
+        // Implement class-level dependency analysis
+        // Implement method call analysis within class methods
     }
 }
+

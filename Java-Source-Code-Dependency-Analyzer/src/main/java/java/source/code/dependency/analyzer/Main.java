@@ -24,15 +24,39 @@ import java.util.Set;
 
 public class Main {
     public static void main(String[] args) {
+        // Define the root directory containing the Java source files
         String rootDirectory = "path/to/your/java/source";
+        
+        // Specify the fully qualified name of the target method for call hierarchy analysis
+        String targetMethodQualifiedName = "com.example.MyClass.myMethod";
+
+        // Collect all Java source files from the specified directory
         List<String> javaFiles = JavaFileCollector.collectJavaFiles(rootDirectory);
 
-        DependencyAnalyzer analyzer = new DependencyAnalyzer();
+        // Initialize the DependencyAnalyzer with the target method's fully qualified name
+        DependencyAnalyzer analyzer = new DependencyAnalyzer(targetMethodQualifiedName);
+        
+        // Analyze each collected file
         for (String filePath : javaFiles) {
             analyzer.analyzeFile(filePath);
         }
 
-        Map<String, Set<String>> methodCallGraph = analyzer.getMethodCallGraph();
-        YamlExporter.exportMethodCallGraphToYaml(methodCallGraph, "output/method_call_graph.yaml");
+        // Extract the class dependencies and the call hierarchy for the specified method
+        Map<String, Set<String>> classDependencies = analyzer.getClassDependencies();
+        Set<String> callHierarchy = analyzer.getCallHierarchy();
+
+        // Export the collected class dependencies to a YAML file
+        YamlExporter.exportToYaml(classDependencies, "output/class_dependencies.yaml");
+
+        // Export the extracted call hierarchy to a YAML file
+        YamlExporter.exportMethodCallGraphToYaml(Map.of(targetMethodQualifiedName, callHierarchy), "output/method_call_hierarchy.yaml");
+
+        // Optionally, print the extracted information to the console
+        System.out.println("Class Dependencies:");
+        classDependencies.forEach((key, value) -> System.out.println(key + " -> " + value));
+
+        System.out.println("\nCall Hierarchy for " + targetMethodQualifiedName + ":");
+        callHierarchy.forEach(System.out::println);
     }
 }
+

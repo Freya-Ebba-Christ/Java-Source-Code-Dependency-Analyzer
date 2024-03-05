@@ -26,12 +26,18 @@ import java.util.Map;
 import java.util.Set;
 
 public class YamlExporter {
-    public static void exportMethodCallGraphToYaml(Map<String, Set<String>> data, String outputPath) {
+    public static void exportToYaml(Map<String, Set<String>> data, String outputPath) {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         try {
             mapper.writeValue(new File(outputPath), data);
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println("Error exporting to YAML: " + e.getMessage());
         }
     }
+
+    public static void exportMethodCallGraphToYaml(Map<String, Set<String>> data, String outputPath) {
+        exportToYaml(data, outputPath);
+    }
 }
+

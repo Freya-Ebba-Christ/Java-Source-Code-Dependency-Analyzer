@@ -25,21 +25,21 @@ import com.github.javaparser.symbolsolver.JavaSymbolSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.CombinedTypeSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeSolver;
 import java.io.FileInputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class DependencyAnalyzer {
+    private final Map<String, Set<String>> classDependencies = new HashMap<>();
     private final Map<String, Set<String>> methodCallGraph = new HashMap<>();
     private final JavaParser javaParser;
+    private final String targetMethodQualifiedName;
 
-    public DependencyAnalyzer() {
+    public DependencyAnalyzer(String targetMethodQualifiedName) {
+        this.targetMethodQualifiedName = targetMethodQualifiedName;
         CombinedTypeSolver combinedTypeSolver = new CombinedTypeSolver(new ReflectionTypeSolver());
         JavaSymbolSolver symbolSolver = new JavaSymbolSolver(combinedTypeSolver);
 
         ParserConfiguration configuration = new ParserConfiguration();
         configuration.setSymbolResolver(symbolSolver);
-        
         this.javaParser = new JavaParser(configuration);
     }
 
@@ -49,16 +49,34 @@ public class DependencyAnalyzer {
 
             if (parseResult.isSuccessful() && parseResult.getResult().isPresent()) {
                 CompilationUnit cu = parseResult.getResult().get();
-                ClassAndMethodVisitor classAndMethodVisitor = new ClassAndMethodVisitor(methodCallGraph);
-                cu.accept(classAndMethodVisitor, null);
+                cu.accept(new ClassAndMethodVisitor(classDependencies, methodCallGraph, targetMethodQualifiedName), null);
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    public Map<String, Set<String>> getMethodCallGraph() {
-        return methodCallGraph;
+    public Map<String, Set<String>> getClassDependencies() {
+        return classDependencies;
+    }
+
+    public Set<String> getCallHierarchy() {
+        Set<String> callHierarchy = new HashSet<>();
+        extractCallHierarchy(targetMethodQualifiedName, callHierarchy);
+        return callHierarchy;
+    }
+
+    private void extractCallHierarchy(String methodName, Set<String> callHierarchy) {
+        if (methodCallGraph.containsKey(methodName)) {
+            Set<String> calledMethods = methodCallGraph.get(methodName);
+            for (String calledMethod : calledMethods) {
+                if (callHierarchy.add(calledMethod)) {
+                    extractCallHierarchy(calledMethod, callHierarchy);
+                }
+            }
+        }
     }
 }
+
 
 

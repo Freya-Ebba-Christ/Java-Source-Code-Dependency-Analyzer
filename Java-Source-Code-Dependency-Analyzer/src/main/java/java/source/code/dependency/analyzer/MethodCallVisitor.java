@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class MethodCallVisitor extends VoidVisitorAdapter<String> {
-    private final Map<String, Set<String>> methodCallGraph;
+    private Map<String, Set<String>> methodCallGraph;
 
     public MethodCallVisitor(Map<String, Set<String>> methodCallGraph) {
         this.methodCallGraph = methodCallGraph;
@@ -39,7 +39,7 @@ public class MethodCallVisitor extends VoidVisitorAdapter<String> {
             String calleeSignature = resolved.getQualifiedSignature();
             methodCallGraph.get(currentMethodSignature).add(calleeSignature);
         } catch (Exception e) {
-            // Resolution error
+            // Handle resolution error
         }
     }
 }
