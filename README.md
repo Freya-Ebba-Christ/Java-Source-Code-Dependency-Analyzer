@@ -5,7 +5,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <body>
-    <h1>Java Source Code Dependency Analyzer Features</h1>
     <div>
         <h2>Class-Level Dependency Analysis</h2>
         <p>It examines Java source files to identify class-level dependencies, including inheritance (via <code>extends</code> and <code>implements</code>) and associations between classes. This feature helps in understanding how classes are interrelated, which is crucial for assessing the impact of changes, refactoring, and understanding the overall architecture of the software.</p>
