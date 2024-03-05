@@ -1,3 +1,4 @@
-![image](https://github.com/Freya-Ebba-Christ/Java-Source-Code-Dependency-Analyzer/assets/57752514/70894cb0-9f3e-4a43-99ac-f3ba4a2b86ea)
+![image](https://github.com/Freya-Ebba-Christ/Java-Source-Code-Dependency-Analyzer/assets/57752514/c7cb4ddf-2cef-4990-9587-eac15948b87a)
+
 
 # Java-Source-Code-Dependency-Analyzer
